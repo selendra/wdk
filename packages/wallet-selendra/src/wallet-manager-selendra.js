@@ -16,6 +16,8 @@
 
 import WalletManagerEvm from '@tetherto/wdk-wallet-evm'
 
+import { JsonRpcProvider, Network as EthersNetwork } from 'ethers'
+
 import { SELENDRA_MAINNET, SELENDRA_TESTNET } from './chains.js'
 
 /** @typedef {import('@tetherto/wdk-wallet-evm').WalletAccountEvm} WalletAccountEvm */
@@ -26,13 +28,15 @@ import { SELENDRA_MAINNET, SELENDRA_TESTNET } from './chains.js'
  * @property {string | import('ethers').Eip1193Provider} [provider] - The URL of the RPC provider, or an EIP-1193 provider instance.
  * @property {number} [chainId] - The chain ID (default: 1961 for mainnet, 1953 for testnet).
  * @property {number | bigint} [transferMaxFee] - The maximum fee amount for transfer operations.
+ * @property {'mainnet' | 'testnet'} [network] - The network to use (default: 'mainnet').
  */
 
 /**
  * WalletManagerSelendra provides wallet management for the Selendra blockchain.
  *
  * Selendra is a Substrate-based blockchain with EVM compatibility.
- * This class extends WalletManagerEvm with Selendra-specific defaults.
+ * This class extends WalletManagerEvm with Selendra-specific defaults
+ * including correct chain ID (1961) and RPC endpoints.
  *
  * @extends WalletManagerEvm
  *
@@ -43,60 +47,97 @@ import { SELENDRA_MAINNET, SELENDRA_TESTNET } from './chains.js'
  * const account = await wallet.getAccount(0)
  * console.log('Address:', await account.getAddress())
  * console.log('Balance:', await account.getBalance())
+ *
+ * @example
+ * // Testnet
+ * const wallet = new WalletManagerSelendra(seedPhrase, { network: 'testnet' })
+ *
+ * @example
+ * // Custom RPC
+ * const wallet = new WalletManagerSelendra(seedPhrase, { provider: 'https://my-rpc.selendra.org' })
  */
 export default class WalletManagerSelendra extends WalletManagerEvm {
   /**
    * Creates a new wallet manager for the Selendra blockchain.
    *
-   * @param {string | Uint8Array} seed - The wallet's [BIP-39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) seed phrase.
+   * @param {string | Uint8Array} seed - The wallet's BIP-39 seed phrase.
    * @param {SelendraWalletConfig} [config] - The configuration object.
    */
   constructor (seed, config = {}) {
-    const { chainId, provider, ...restConfig } = config
+    const { network, chainId, ...restConfig } = config
 
-    // Default to mainnet if no provider or chainId specified
-    const defaultChainId = chainId ?? (provider ? undefined : SELENDRA_MAINNET.chainId)
-    const defaultProvider = provider ?? (chainId ? undefined : SELENDRA_MAINNET.rpc)
+    // Resolve the chain config based on network or chainId
+    let chainConfig = SELENDRA_MAINNET
+    if (network === 'testnet' || chainId === SELENDRA_TESTNET.chainId) {
+      chainConfig = SELENDRA_TESTNET
+    }
+
+    // Pass RPC URL as string so parent creates a JsonRpcProvider
+    const providerConfig = restConfig.provider || chainConfig.rpc
 
     super(seed, {
       ...restConfig,
-      provider: defaultProvider,
-      chainId: defaultChainId
+      provider: providerConfig
     })
 
     /**
-     * The Selendra wallet configuration.
+     * The resolved chain configuration.
+     *
+     * @protected
+     * @type {Object}
+     */
+    this._selendraChainConfig = chainConfig
+
+    /**
+     * The original user config (without provider override).
      *
      * @protected
      * @type {SelendraWalletConfig}
      */
-    this._config = config
+    this._userConfig = config
+
+    // Replace the provider with one that has the correct Selendra chain ID.
+    // The parent WalletManagerEvm creates a JsonRpcProvider from the string URL,
+    // but ethers v6 may detect the wrong chain ID. We force the correct one.
+    const selendraNetwork = EthersNetwork.from(chainConfig.chainId)
+    this._provider = new JsonRpcProvider(chainConfig.rpc, selendraNetwork, {
+      staticNetwork: true,
+      batchMaxCount: 0
+    })
   }
 
   /**
-   * Returns the wallet account at a specific index (see [BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)).
+   * Returns the wallet account at a specific index.
    *
-   * @example
-   * // Returns the account with derivation path m/44'/60'/0'/0/1
-   * const account = await wallet.getAccount(1);
-   * @param {number} [index] - The index of the account to get (default: 0).
+   * @param {number} [index] - The account index (default: 0).
    * @returns {Promise<WalletAccountEvm>} The account.
    */
   async getAccount (index = 0) {
-    return await super.getAccount(index)
+    const account = await super.getAccount(index)
+
+    // Re-connect the account to our corrected provider with the right chain ID
+    if (account._account) {
+      account._account = account._account.connect(this._provider)
+    }
+
+    return account
   }
 
   /**
    * Returns the wallet account at a specific BIP-44 derivation path.
    *
-   * @example
-   * // Returns the account with derivation path m/44'/60'/0'/0/1
-   * const account = await wallet.getAccountByPath("0'/0/1");
    * @param {string} path - The derivation path (e.g. "0'/0/0").
    * @returns {Promise<WalletAccountEvm>} The account.
    */
   async getAccountByPath (path) {
-    return await super.getAccountByPath(path)
+    const account = await super.getAccountByPath(path)
+
+    // Re-connect the account to our corrected provider
+    if (account._account) {
+      account._account = account._account.connect(this._provider)
+    }
+
+    return account
   }
 
   /**
