@@ -26,17 +26,15 @@
 /** @typedef {import('@tetherto/wdk-wallet').TransactionResult} TransactionResult */
 /** @typedef {import('@tetherto/wdk-wallet').TransferResult} TransferResult */
 
-/** @typedef {import('./src/wallet-account-read-only-evm.js').TypedData} TypedData */
-/** @typedef {import('./src/wallet-account-read-only-evm.js').DelegationInfo} DelegationInfo */
-/** @typedef {import('./src/wallet-account-read-only-evm.js').EvmTransaction} EvmTransaction */
-/** @typedef {import('./src/wallet-account-read-only-evm.js').EvmTransferOptions} EvmTransferOptions */
-/** @typedef {import('./src/wallet-account-read-only-evm.js').EvmWalletConfig} EvmWalletConfig */
-
-/** @typedef {import('./src/wallet-account-evm.js').ApproveOptions} ApproveOptions */
+/** @typedef {import('@tetherto/wdk-wallet-evm').TypedData} TypedData */
+/** @typedef {import('@tetherto/wdk-wallet-evm').DelegationInfo} DelegationInfo */
+/** @typedef {import('@tetherto/wdk-wallet-evm').EvmTransaction} EvmTransaction */
+/** @typedef {import('@tetherto/wdk-wallet-evm').EvmTransferOptions} EvmTransferOptions */
+/** @typedef {import('@tetherto/wdk-wallet-evm').EvmWalletConfig} EvmWalletConfig */
+/** @typedef {import('@tetherto/wdk-wallet-evm').ApproveOptions} ApproveOptions */
 
 export { default } from './src/wallet-manager-selendra.js'
 
 export { SELENDRA_MAINNET, SELENDRA_TESTNET } from './src/chains.js'
 
-export { default as WalletAccountEvm } from '@tetherto/wdk-wallet-evm'
-export { default as WalletAccountReadOnlyEvm } from '@tetherto/wdk-wallet-evm'
+export { WalletAccountEvm, WalletAccountReadOnlyEvm } from '@tetherto/wdk-wallet-evm'
