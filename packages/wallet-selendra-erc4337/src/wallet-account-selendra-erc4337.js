@@ -54,11 +54,6 @@ export default class WalletAccountSelendraErc4337 extends WalletAccountEvmErc433
      * @type {import('ethers').Provider | undefined}
      */
     this._selendraProvider = provider
-
-    // Re-connect the owner account to the corrected provider
-    if (this._ownerAccount && this._selendraProvider) {
-      this._ownerAccount._account = this._ownerAccount._account.connect(this._selendraProvider)
-    }
   }
 
   /**

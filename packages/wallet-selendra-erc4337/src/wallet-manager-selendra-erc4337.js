@@ -17,7 +17,7 @@
 import WalletManager from '@tetherto/wdk-wallet'
 import WalletManagerEvm from '@tetherto/wdk-wallet-evm'
 
-import { JsonRpcProvider, BrowserProvider, Network } from 'ethers'
+import { JsonRpcProvider, Network as EthersNetwork } from 'ethers'
 
 import WalletAccountSelendraErc4337 from './wallet-account-selendra-erc4337.js'
 
@@ -117,23 +117,14 @@ export default class WalletManagerSelendraErc4337 extends WalletManager {
      */
     this._config = mergedConfig
 
-    const { provider } = mergedConfig
-
-    if (provider) {
-      /**
-       * An ethers provider to interact with a node of the blockchain.
-       *
-       * @protected
-       * @type {Provider | undefined}
-       */
-      const selendraNetwork = Network.from(chainConfig.chainId)
-      this._provider = typeof provider === 'string'
-        ? new JsonRpcProvider(provider, selendraNetwork, {
-          staticNetwork: true,
-          batchMaxCount: 0
-        })
-        : new BrowserProvider(provider)
-    }
+    // Replace the provider with one that has the correct Selendra chain ID.
+    // The parent class may create a provider, but ethers v6 may detect the wrong chain ID.
+    // We force the correct one using Network.from() and staticNetwork: true.
+    const selendraNetwork = EthersNetwork.from(chainConfig.chainId)
+    this._provider = new JsonRpcProvider(chainConfig.rpc, selendraNetwork, {
+      staticNetwork: true,
+      batchMaxCount: 0
+    })
   }
 
   /**
@@ -143,7 +134,14 @@ export default class WalletManagerSelendraErc4337 extends WalletManager {
    * @returns {Promise<import('./wallet-account-selendra-erc4337.js').default>} The account.
    */
   async getAccount (index = 0) {
-    return await this.getAccountByPath(`0'/0/${index}`)
+    const account = await this.getAccountByPath(`0'/0/${index}`)
+
+    // Re-connect the account to our corrected provider with the right chain ID
+    if (account._account) {
+      account._account = account._account.connect(this._provider)
+    }
+
+    return account
   }
 
   /**
@@ -159,7 +157,14 @@ export default class WalletManagerSelendraErc4337 extends WalletManager {
       this._accounts[path] = account
     }
 
-    return this._accounts[path]
+    const account = this._accounts[path]
+
+    // Re-connect the account to our corrected provider with the right chain ID
+    if (account._account) {
+      account._account = account._account.connect(this._provider)
+    }
+
+    return account
   }
 
   /**

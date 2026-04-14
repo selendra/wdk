@@ -63,31 +63,57 @@ describe('WalletManagerSelendraErc4337', () => {
   })
 
   describe('getAccount', () => {
-    test('should return the account at index 0 by default', async () => {
-      // Skip until Safe contracts are deployed on Selendra
-      expect(wallet).toBeInstanceOf(WalletManagerSelendraErc4337)
+    test.skip('should return the account at index 0 by default - requires Safe contracts deployed', async () => {
+      const account = await wallet.getAccount()
+
+      expect(account).toBeDefined()
+      expect(account.path).toBe("m/44'/60'/0'/0/0")
     })
 
-    test('should return the account at the given index', async () => {
-      // Skip until Safe contracts are deployed on Selendra
-      expect(wallet).toBeInstanceOf(WalletManagerSelendraErc4337)
+    test.skip('should return the account at the given index - requires Safe contracts deployed', async () => {
+      const account = await wallet.getAccount(3)
+
+      expect(account).toBeDefined()
+      expect(account.path).toBe("m/44'/60'/0'/0/3")
     })
 
-    test('should derive consistent addresses for same index', async () => {
-      // Skip until Safe contracts are deployed on Selendra
-      expect(wallet).toBeInstanceOf(WalletManagerSelendraErc4337)
+    test.skip('should derive consistent addresses for same index - requires Safe contracts deployed', async () => {
+      const account1 = await wallet.getAccount(0)
+      const account2 = await wallet.getAccount(0)
+
+      const address1 = await account1.getAddress()
+      const address2 = await account2.getAddress()
+
+      expect(address1).toBe(address2)
+    })
+
+    test.skip('should connect account with provider having correct chain ID - requires Safe contracts deployed', async () => {
+      const account = await wallet.getAccount()
+
+      // Verify the account's internal provider has the correct Selendra chain ID
+      const providerChainId = await account._account.provider.getNetwork()
+        .then(network => Number(network.chainId))
+
+      expect(providerChainId).toBe(SELENDRA_MAINNET.chainId)
     })
   })
 
   describe('getAccountByPath', () => {
-    test('should return the account with the given path', async () => {
-      // Skip until Safe contracts are deployed on Selendra
-      expect(wallet).toBeInstanceOf(WalletManagerSelendraErc4337)
+    test.skip('should return the account with the given path - requires Safe contracts deployed', async () => {
+      const account = await wallet.getAccountByPath("1'/2/3")
+
+      expect(account).toBeDefined()
+      expect(account.path).toBe("m/44'/60'/1'/2/3")
     })
 
-    test('should derive consistent addresses for same path', async () => {
-      // Skip until Safe contracts are deployed on Selendra
-      expect(wallet).toBeInstanceOf(WalletManagerSelendraErc4337)
+    test.skip('should derive consistent addresses for same path - requires Safe contracts deployed', async () => {
+      const account1 = await wallet.getAccountByPath("0'/0/1")
+      const account2 = await wallet.getAccountByPath("0'/0/1")
+
+      const address1 = await account1.getAddress()
+      const address2 = await account2.getAddress()
+
+      expect(address1).toBe(address2)
     })
   })
 

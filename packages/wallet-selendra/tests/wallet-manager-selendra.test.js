@@ -64,6 +64,16 @@ describe('WalletManagerSelendra', () => {
       expect(account.path).toBe("m/44'/60'/0'/0/0")
     })
 
+    test('should connect account with provider having correct chain ID', async () => {
+      const account = await wallet.getAccount()
+
+      // Verify the account's internal provider has the correct Selendra chain ID
+      const providerChainId = await account._account.provider.getNetwork()
+        .then(network => Number(network.chainId))
+
+      expect(providerChainId).toBe(SELENDRA_MAINNET.chainId)
+    })
+
     test('should return the account at the given index', async () => {
       const account = await wallet.getAccount(3)
 
