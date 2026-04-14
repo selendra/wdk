@@ -5,13 +5,14 @@
 ### Modules Managed
 
 **Wallet Modules** - Add wallet support for any blockchain:
-- `@tetherto/wdk-wallet-evm` - Ethereum, Polygon, Arbitrum 
+- `@tetherto/wdk-wallet-evm` - Ethereum, Polygon, Arbitrum
 - `@tetherto/wdk-wallet-evm-erc4337` - EVM with no gas fees
 - `@tetherto/wdk-wallet-ton` - TON blockchain
 - `@tetherto/wdk-wallet-ton-gasless` - TON with no gas fees
 - `@tetherto/wdk-wallet-btc` - Bitcoin
 - `@tetherto/wdk-wallet-tron` - TRON blockchain
 - `@tetherto/wdk-wallet-solana` - Solana blockchain
+- `@selendra/wdk-wallet-selendra` - Selendra blockchain
 
 **Service Modules** - Add swap, bridge, and lending services:
 - `@tetherto/wdk-protocol-swap-paraswap-evm` - Token swaps on EVM
@@ -41,6 +42,7 @@ npm install @tetherto/wdk
 import WDK from '@tetherto/wdk'
 import WalletManagerEvm from '@tetherto/wdk-wallet-evm'
 import WalletManagerTon from '@tetherto/wdk-wallet-ton'
+import WalletManagerSelendra from '@selendra/wdk-wallet-selendra'
 import ParaswapProtocolEvm from '@tetherto/wdk-protocol-swap-paraswap-evm'
 import Usdt0ProtocolTon from '@tetherto/wdk-protocol-bridge-usdt0-ton'
 
@@ -48,12 +50,14 @@ import Usdt0ProtocolTon from '@tetherto/wdk-protocol-bridge-usdt0-ton'
 const wdk = new WDK(seed) //seed are your twelve word phrase
   .registerWallet('ethereum', WalletManagerEvm, ethereumWalletConfig)
   .registerWallet('ton', WalletManagerTon, tonWalletConfig)
+  .registerWallet('selendra', WalletManagerSelendra)
   .registerProtocol('ethereum', 'paraswap', ParaswapProtocolEvm, paraswapProtocolConfig)
   .registerProtocol('ton', 'usdt0', Usdt0ProtocolTon, usdt0ProtocolConfig)
 
 // Get accounts using different ways
 const ethAccount = await wdk.getAccount('ethereum', 3)
 const tonAccount = await wdk.getAccountByPath('ton', "1'/2/3")
+const selendraAccount = await wdk.getAccount('selendra', 0)
 
 // Send transactions directly
 const { hash: txHash, fee: txFee } = await ethAccount.sendTransaction(tx)
@@ -115,6 +119,7 @@ const wdk = new WDK(seed) //seed is your twelve word phrase
   .registerWallet('ethereum', WalletManagerEvm, ethereumWalletConfig)
   .registerWallet('arbitrum', WalletManagerEvm, arbitrumWalletConfig)
   .registerWallet('ton', WalletManagerTon, tonWalletConfig)
+  .registerWallet('selendra', WalletManagerSelendra)
 ```
 
 ### Add Services to One Account
