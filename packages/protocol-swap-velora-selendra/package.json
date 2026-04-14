@@ -1,0 +1,59 @@
+{
+  "name": "@selendra/wdk-protocol-swap-velora-selendra",
+  "version": "1.0.0-beta.1",
+  "description": "Token swapping on Selendra via velora aggregator.",
+  "keywords": [
+    "wdk",
+    "protocol",
+    "swap",
+    "velora",
+    "selendra",
+    "evm",
+    "erc-4337"
+  ],
+  "author": "Selendra",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/selendra/wdk.git"
+  },
+  "main": "index.js",
+  "type": "module",
+  "types": "./types",
+  "scripts": {
+    "build:types": "tsc",
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "dependencies": {
+    "@tetherto/wdk-protocol-swap-velora-evm": "1.0.0-beta.4",
+    "ethers": "6.13.5"
+  },
+  "devDependencies": {
+    "cross-env": "7.0.3",
+    "jest": "29.7.0",
+    "standard": "17.1.2",
+    "typescript": "5.8.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "bare": "./bare.js",
+      "default": "./index.js"
+    },
+    "./package": {
+      "default": "./package.json"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "standard": {
+    "ignore": [
+      "bare.js",
+      "tests/**/*.js"
+    ]
+  }
+}
