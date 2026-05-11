@@ -14,9 +14,4 @@
 
 'use strict'
 
-/** @typedef {import('@tetherto/wdk-wallet/protocols').BridgeProtocolConfig} BridgeProtocolConfig */
-/** @typedef {import('@tetherto/wdk-wallet/protocols').BridgeResult} BridgeResult */
-
-export { default } from './src/usdt0-protocol-selendra.js'
-
-export { SELENDRA_MAINNET, SELENDRA_TESTNET } from '@selendra/wdk-chains-selendra'
+export { SELENDRA_MAINNET, SELENDRA_TESTNET } from './src/chains.js'

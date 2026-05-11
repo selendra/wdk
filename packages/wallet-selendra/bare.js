@@ -15,4 +15,4 @@
 'use strict'
 
 export { default } from './src/wallet-manager-selendra.js'
-export { SELENDRA_MAINNET, SELENDRA_TESTNET } from './src/chains.js'
+export { SELENDRA_MAINNET, SELENDRA_TESTNET } from '@selendra/wdk-chains-selendra'

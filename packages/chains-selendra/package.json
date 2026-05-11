@@ -1,16 +1,12 @@
 {
-  "name": "@selendra/wdk-protocol-bridge-usdt0-selendra",
+  "name": "@selendra/wdk-chains-selendra",
   "version": "1.0.0-beta.1",
-  "description": "Bridge USDT0 tokens between Selendra and other EVM chains via LayerZero.",
+  "description": "Selendra chain configurations for the Wallet Development Kit.",
   "keywords": [
     "wdk",
-    "protocol",
-    "bridge",
-    "usdt0",
     "selendra",
-    "layerzero",
-    "evm",
-    "erc-4337"
+    "chains",
+    "evm"
   ],
   "author": "Selendra",
   "license": "Apache-2.0",
@@ -24,24 +20,15 @@
   "scripts": {
     "build:types": "tsc",
     "lint": "standard",
-    "lint:fix": "standard --fix",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
-  },
-  "dependencies": {
-    "@selendra/wdk-chains-selendra": "1.0.0-beta.1",
-    "@tetherto/wdk-protocol-bridge-usdt0-evm": "1.0.0-beta.3",
-    "ethers": "6.13.5"
+    "lint:fix": "standard --fix"
   },
   "devDependencies": {
-    "cross-env": "7.0.3",
-    "jest": "30.1.3",
     "standard": "17.1.2",
     "typescript": "5.8.3"
   },
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "bare": "./bare.js",
       "default": "./index.js"
     },
     "./package": {
@@ -51,11 +38,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "standard": {
-    "ignore": [
-      "bare.js",
-      "tests/**/*.js"
-    ]
   }
 }

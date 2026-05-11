@@ -18,7 +18,7 @@ import WalletManagerEvm from '@tetherto/wdk-wallet-evm'
 
 import { JsonRpcProvider, Network as EthersNetwork } from 'ethers'
 
-import { SELENDRA_MAINNET, SELENDRA_TESTNET } from './chains.js'
+import { SELENDRA_MAINNET, SELENDRA_TESTNET } from '@selendra/wdk-chains-selendra'
 
 /** @typedef {import('@tetherto/wdk-wallet-evm').WalletAccountEvm} WalletAccountEvm */
 /** @typedef {import('@tetherto/wdk-wallet-evm').EvmWalletConfig} EvmWalletConfig */

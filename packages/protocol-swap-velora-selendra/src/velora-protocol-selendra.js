@@ -22,7 +22,7 @@ import { JsonRpcProvider, BrowserProvider, Network } from 'ethers'
 
 import { constructSimpleSDK } from '@velora-dex/sdk'
 
-import { SELENDRA_MAINNET, SELENDRA_TESTNET } from './chains.js'
+import { SELENDRA_MAINNET, SELENDRA_TESTNET } from '@selendra/wdk-chains-selendra'
 
 /** @typedef {import('@tetherto/wdk-wallet/protocols').SwapProtocolConfig} SwapProtocolConfig */
 /** @typedef {import('@tetherto/wdk-wallet/protocols').SwapOptions} SwapOptions */

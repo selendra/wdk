@@ -10,8 +10,15 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tetherto/wdk.git"
+    "url": "git+https://github.com/selendra/wdk.git"
   },
+  "workspaces": [
+    "packages/chains-selendra",
+    "packages/wallet-selendra",
+    "packages/wallet-selendra-erc4337",
+    "packages/protocol-bridge-usdt0-selendra",
+    "packages/protocol-swap-velora-selendra"
+  ],
   "main": "index.js",
   "type": "module",
   "types": "./types",

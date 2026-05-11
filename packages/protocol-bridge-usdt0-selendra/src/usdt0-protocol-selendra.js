@@ -25,7 +25,7 @@ import { TronWeb } from 'tronweb'
 
 import { OFT_ABI, TRANSACTION_VALUE_HELPER_ABI } from './abi.js'
 import { FEE_TOLERANCE, BLOCKCHAINS } from './config.js'
-import { SELENDRA_MAINNET, SELENDRA_TESTNET } from './chains.js'
+import { SELENDRA_MAINNET, SELENDRA_TESTNET } from '@selendra/wdk-chains-selendra'
 
 /** @typedef {import('@tetherto/wdk-wallet/protocols').BridgeProtocolConfig} BridgeProtocolConfig */
 /** @typedef {import('@tetherto/wdk-wallet/protocols').BridgeResult} BridgeResult */
@@ -344,15 +344,15 @@ export default class Usdt0ProtocolSelendra extends BridgeProtocol {
       to = addressToBytes32(recipient)
     }
 
-    const blockchainKey = this._selendraChainConfig.chainId === 1961 ? 'selendra' : 'selendraTestnet'
-    const selendraEid = this._customAddresses.dstEid || BLOCKCHAINS[blockchainKey]?.eid
+    const targetChainConfig = BLOCKCHAINS[targetChain]
+    const targetEid = dstEidOverride ?? targetChainConfig?.eid
 
-    if (!selendraEid) {
-      throw new Error(`LayerZero endpoint ID not configured for ${this._selendraChainConfig.name}. Please provide 'dstEid' in config.`)
+    if (!targetEid) {
+      throw new Error(`LayerZero endpoint ID not configured for target chain '${targetChain}'. Please provide 'dstEid' in options.`)
     }
 
     return {
-      dstEid: dstEidOverride ?? selendraEid,
+      dstEid: targetEid,
       to,
       amountLD: amount,
       minAmountLD: amount * FEE_TOLERANCE / 1_000n,

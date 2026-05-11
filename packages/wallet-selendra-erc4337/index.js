@@ -35,6 +35,6 @@
 
 export { default } from './src/wallet-manager-selendra-erc4337.js'
 
-export { SELENDRA_MAINNET, SELENDRA_TESTNET } from './src/chains.js'
+export { SELENDRA_MAINNET, SELENDRA_TESTNET } from '@selendra/wdk-chains-selendra'
 
 export { WalletAccountEvmErc4337, WalletAccountReadOnlyEvmErc4337 } from '@tetherto/wdk-wallet-evm-erc-4337'

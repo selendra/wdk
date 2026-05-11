@@ -15,13 +15,12 @@
 'use strict'
 
 import WalletManager from '@tetherto/wdk-wallet'
-import WalletManagerEvm from '@tetherto/wdk-wallet-evm'
 
 import { JsonRpcProvider, Network as EthersNetwork } from 'ethers'
 
 import WalletAccountSelendraErc4337 from './wallet-account-selendra-erc4337.js'
 
-import { SELENDRA_MAINNET, SELENDRA_TESTNET } from './chains.js'
+import { SELENDRA_MAINNET, SELENDRA_TESTNET } from '@selendra/wdk-chains-selendra'
 
 /** @typedef {import('ethers').Provider} Provider */
 
@@ -81,6 +80,24 @@ import { SELENDRA_MAINNET, SELENDRA_TESTNET } from './chains.js'
  * const wallet = new WalletManagerSelendraErc4337(seedPhrase, { network: 'testnet' })
  */
 export default class WalletManagerSelendraErc4337 extends WalletManager {
+  /**
+   * Multiplier for normal fee rate calculations (in %).
+   * Matches the value from WalletManagerEvm to avoid accessing its protected member.
+   *
+   * @static
+   * @type {bigint}
+   */
+  static _FEE_RATE_NORMAL_MULTIPLIER = 110n
+
+  /**
+   * Multiplier for fast fee rate calculations (in %).
+   * Matches the value from WalletManagerEvm to avoid accessing its protected member.
+   *
+   * @static
+   * @type {bigint}
+   */
+  static _FEE_RATE_FAST_MULTIPLIER = 200n
+
   /**
    * Creates a new ERC-4337 wallet manager for the Selendra blockchain.
    *
@@ -182,8 +199,8 @@ export default class WalletManagerSelendraErc4337 extends WalletManager {
     const feeRate = data.maxFeePerGas || data.gasPrice
 
     return {
-      normal: feeRate * WalletManagerEvm._FEE_RATE_NORMAL_MULTIPLIER / 100n,
-      fast: feeRate * WalletManagerEvm._FEE_RATE_FAST_MULTIPLIER / 100n
+      normal: feeRate * WalletManagerSelendraErc4337._FEE_RATE_NORMAL_MULTIPLIER / 100n,
+      fast: feeRate * WalletManagerSelendraErc4337._FEE_RATE_FAST_MULTIPLIER / 100n
     }
   }
 
