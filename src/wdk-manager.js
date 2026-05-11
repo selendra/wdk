@@ -45,19 +45,20 @@ export default class WDK {
     this._wallets = new Map()
 
     /** @private */
-    this._protocols = { swap: { }, bridge: { }, lending: { }, fiat: { } }
+    this._protocols = { swap: Object.create(null), bridge: Object.create(null), lending: Object.create(null), fiat: Object.create(null) }
 
     /** @private */
-    this._middlewares = { }
+    this._middlewares = Object.create(null)
   }
 
   /**
    * Returns a random BIP-39 seed phrase.
    *
+   * @param {12 | 24} [wordCount] - The number of words to include in the seed phrase (default: 12).
    * @returns {string} The seed phrase.
    */
-  static getRandomSeedPhrase () {
-    return WalletManager.getRandomSeedPhrase()
+  static getRandomSeedPhrase (wordCount = 12) {
+    return WalletManager.getRandomSeedPhrase(wordCount)
   }
 
   /**
@@ -107,19 +108,19 @@ export default class WDK {
    */
   registerProtocol (blockchain, label, Protocol, config) {
     if (Protocol.prototype instanceof SwapProtocol) {
-      this._protocols.swap[blockchain] ??= { }
+      this._protocols.swap[blockchain] ??= Object.create(null)
 
       this._protocols.swap[blockchain][label] = { Protocol, config }
     } else if (Protocol.prototype instanceof BridgeProtocol) {
-      this._protocols.bridge[blockchain] ??= { }
+      this._protocols.bridge[blockchain] ??= Object.create(null)
 
       this._protocols.bridge[blockchain][label] = { Protocol, config }
     } else if (Protocol.prototype instanceof LendingProtocol) {
-      this._protocols.lending[blockchain] ??= { }
+      this._protocols.lending[blockchain] ??= Object.create(null)
 
       this._protocols.lending[blockchain][label] = { Protocol, config }
     } else if (Protocol.prototype instanceof FiatProtocol) {
-      this._protocols.fiat[blockchain] ??= { }
+      this._protocols.fiat[blockchain] ??= Object.create(null)
 
       this._protocols.fiat[blockchain][label] = { Protocol, config }
     }
@@ -236,7 +237,7 @@ export default class WDK {
 
   /** @private */
   _registerProtocols (account, { blockchain }) {
-    const protocols = { swap: { }, bridge: { }, lending: { }, fiat: { } }
+    const protocols = { swap: Object.create(null), bridge: Object.create(null), lending: Object.create(null), fiat: Object.create(null) }
 
     account.registerProtocol = (label, Protocol, config) => {
       if (Protocol.prototype instanceof SwapProtocol) {

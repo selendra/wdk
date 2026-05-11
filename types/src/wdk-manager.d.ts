@@ -2,9 +2,10 @@ export default class WdkManager {
     /**
      * Returns a random BIP-39 seed phrase.
      *
+     * @param {12 | 24} [wordCount] - The number of words to include in the seed phrase (default: 12).
      * @returns {string} The seed phrase.
      */
-    static getRandomSeedPhrase(): string;
+    static getRandomSeedPhrase(wordCount?: 12 | 24): string;
     /**
      * Checks if a seed is valid.
      *
